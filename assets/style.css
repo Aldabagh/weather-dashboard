@@ -42,7 +42,7 @@ h3, h4 {
 .results-panel {
     width: 75%;
     padding-bottom: 10px;
-    visibility: hidden;
+    /* visibility: hidden; */
     font-family:Verdana, Geneva, Tahoma, sans-serif, 'Times New Roman', Times, serif;
 }
 
@@ -51,9 +51,9 @@ h3, h4 {
     border-right: none;
     padding-left: 10px;
     padding-bottom: 30px;
-    background-color: rgb(166, 174, 136);
+    background-color: rgb(241, 156, 119);
     border-radius: 20px;
-    color: aliceblue;
+    color: rgb(255, 241, 240);
     font-size: 1.5rem;
     width: fit-content;
    

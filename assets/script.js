@@ -26,7 +26,7 @@ async function getForecast(anything){
 }
 
 function displayWeather(data){
-  document.querySelector('#day-0').textContent = Math.round(((data.main.temp-273.15)*1.8)+32);
+  document.querySelector('#temperature').textContent = Math.round(((data.main.temp-273.15)*1.8)+32) + ' °F';
   
   
   
