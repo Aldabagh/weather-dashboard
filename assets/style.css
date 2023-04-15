@@ -35,32 +35,40 @@ h3, h4 {
     margin-top: 5px;
 }
 
-.city-name {
-    width: 89%;
+#city-name {
+    
+    color: rgb(251, 255, 0);
+    
 }
 
 .results-panel {
     width: 75%;
     padding-bottom: 10px;
-    /* visibility: hidden; */
+    visibility: hidden;
     font-family:Verdana, Geneva, Tahoma, sans-serif, 'Times New Roman', Times, serif;
 }
 
 .current-conditions-panel {
-    border: 1px solid #C0C0C0;
-    border-right: none;
-    padding-left: 10px;
-    padding-bottom: 30px;
-    background-color: rgb(241, 156, 119);
+    border:#C0C0C0;
+    border-right: 30px;
+    /* padding-left: 30px;
+    padding-bottom: 10px; */
+    padding: 15px;
+    background-color: #383a65;
     border-radius: 20px;
     color: rgb(255, 241, 240);
     font-size: 1.5rem;
-    width: fit-content;
+    width:max-content;
+    
    
 }
 
+.current-info {
+    color: rgb(0, 255, 255);
+}
+
 .name-block {
-   color: aliceblue; 
+   color: rgb(254, 255, 240); 
 }
 
 .name-block,
