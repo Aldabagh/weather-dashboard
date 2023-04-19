@@ -1,33 +1,50 @@
 const apiKey = "64a3b92c5913e381167a37aa42725948";
 
+let savedCities = JSON.parse(localStorage.getItem("savedCities"))
+savedCities.forEach(function(item){
+  if (item) {
+  $("#city-list").append(
+    '<button type="button" class="list-group-item list-group-item-light list-group-item-action city-name">' +
+      item,
+  );
+  }
+});
+
+
 // API requests current weather
 async function getWeather(event) {
   event.preventDefault();
   const foreCastContainer = document.querySelector(".foreCastContainer");
   foreCastContainer.innerHTML = "";
   const city = document.getElementById("cityName");
-  console.log(city.value);
+  
   const cityName = city.value;
   const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
   // make a request to the url
   const response = await fetch(currentWeatherUrl);
   const data = await response.json();
   displayWeather(data);
-  console.log(data.name);
+
   getForecast(data.name);
 
-  
+  // save searched cities to localstorage 
+
+  let savedCities = JSON.parse(localStorage.getItem("savedCities"))
+
+  if (savedCities) {
+    let updatedCities = [...savedCities,cityName ]
+    localStorage.setItem("savedCities",JSON.stringify(updatedCities))
+
+  } else {
+    localStorage.setItem("savedCities",JSON.stringify([cityName]))
+  }
+
   $("#city-list").append(
     '<button type="button" class="list-group-item list-group-item-light list-group-item-action city-name">' +
       cityName,
   );
-// get the coordinates
-  const lat = data.coord.lat;
-  const lon = data.coord.lon;
-console.log(data);
-  var latLonPair = lat.toString() + " " + lon.toString();
-  // save the latitude and longitude values for that city to local storage along with the city name
-  localStorage.setItem(cityName, latLonPair);
+
+  
 }
 
 //Function to display current weather card
@@ -53,7 +70,7 @@ const createForecastItem = (item) => {
   const foreCastContainer = document.querySelector(".foreCastContainer");
   let parse = new DOMParser();
   let date = moment.unix(item.dt).format("MM/DD/YYYY");
-  console.log({ item });
+
   let textData = `<div class="col">
                       <h5 id="day-0">${date}</h5>
                   </div>
@@ -71,13 +88,13 @@ const createForecastItem = (item) => {
 };
 
 // API requests 5 day forecast
-async function getForecast(coordinates) {
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast/?q=${coordinates}&appid=${apiKey}&cnt=120`;
+async function getForecast(cityName) {
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast/?q=${cityName}&appid=${apiKey}&cnt=120`;
   const response = await fetch(forecastUrl);
   // This converts the UNIX time that is received from the server.
   let timeStamp = moment.unix(1681516800).format("MM/DD/YYYY");
   let res = await response.json();
-  console.log(res);
+  
 
   // clear the existing forecast cards
   const foreCastContainer = document.querySelector(".foreCastContainer");
@@ -94,20 +111,17 @@ async function getForecast(coordinates) {
   );
 }
 
-// event handler
+// event handlers
 document.getElementById("search-button").addEventListener("click", getWeather);
 
-$(".city-list-box").on("click", ".city-name", async function () {
+$(".city-list-box").on("click", ".city-name", async function (e) {
+console.log(e.target.innerText)
   
-  $("#city-name")[0].textContent = $(this)[0].textContent + " (" + moment().format('M/D/YYYY') + ")";
-  var cityName = $(this)[0].textContent;
-  console.log($(this)[0].textContent);
-  var cord = localStorage.getItem(cityName)
-  
-var url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`
+  let city = e.target.innerText
+var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`
 let response = await fetch(url)
 let data = await response.json()
-
-getForecast(data.name);
+displayWeather(data)
+getForecast(city);
   
 });
