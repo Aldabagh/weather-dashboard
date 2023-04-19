@@ -1,6 +1,3 @@
-
-
-
 const apiKey = "64a3b92c5913e381167a37aa42725948";
 
 // API requests current weather
@@ -29,7 +26,7 @@ async function getWeather(event) {
   const lon = data.coord.lon;
 console.log(data);
   var latLonPair = lat.toString() + " " + lon.toString();
-  // save the search city to local storage
+  // save the latitude and longitude values for that city to local storage along with the city name
   localStorage.setItem(cityName, latLonPair);
 }
 
@@ -51,6 +48,28 @@ function displayWeather(data) {
     "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png";
 }
 
+//Function to create/display forecast cards
+const createForecastItem = (item) => {
+  const foreCastContainer = document.querySelector(".foreCastContainer");
+  let parse = new DOMParser();
+  let date = moment.unix(item.dt).format("MM/DD/YYYY");
+  console.log({ item });
+  let textData = `<div class="col">
+                      <h5 id="day-0">${date}</h5>
+                  </div>
+                        <div class="card-body">
+                            <img src="" alt="" id="currentIcon">
+                            <h4>Temp</h4>
+                            <p class="card-text" id="temp-0">${(((parseFloat(item.main.temp) - 273.15) * 9) / 5 + 32).toFixed()}°F</p>
+                            <h4>Humidity</h4>
+                            <p class="card-text" id="humidity-0">${item.main.humidity} %</p>
+                            <h4></h4>
+                            <p class="card-text-dis" id="wind-speed">${item.weather[0].description}</p>
+                        </div>`;
+  let parsedEl = parse.parseFromString(textData, "text/html");
+  foreCastContainer.appendChild(parsedEl.documentElement);
+};
+
 // API requests 5 day forecast
 async function getForecast(coordinates) {
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast/?q=${coordinates}&appid=${apiKey}&cnt=120`;
@@ -59,6 +78,12 @@ async function getForecast(coordinates) {
   let timeStamp = moment.unix(1681516800).format("MM/DD/YYYY");
   let res = await response.json();
   console.log(res);
+
+  // clear the existing forecast cards
+  const foreCastContainer = document.querySelector(".foreCastContainer");
+  foreCastContainer.innerHTML = "";
+
+
   // get every 8th value (24hours) in the returned array from the api call
   res.list.forEach((item, i) =>
     i === 0
@@ -67,63 +92,22 @@ async function getForecast(coordinates) {
       ? createForecastItem(item)
       : null,
   );
-  
 }
-
-//Function to create/display forecast cards
-const createForecastItem = (item) => {
-  const foreCastContainer = document.querySelector(".foreCastContainer");
-  let parse = new DOMParser();
-  let date = moment.unix(item.dt).format("MM/DD/YYYY");
-  console.log({ item });
-  let textData = `<div class="col">
-                              
-                                  <h5 id="day-0">${date}</h5>
-                              </div>
-                                <div class="card-body">
-                                    <img src="" alt="" id="currentIcon">
-                                    <h4>Temp</h4>
-                                    <p class="card-text" id="temp-0">${(
-                                      ((parseFloat(item.main.temp) - 273.15) *
-                                        9) /
-                                        5 +
-                                      32
-                                    ).toFixed()}°F</p>
-                                    <h4>Humidity</h4>
-                                    <p class="card-text" id="humidity-0">${
-                                      item.main.humidity
-                                    } %</p>
-                                    <h4></h4>
-                                    <p class="card-text-dis" id="wind-speed">${
-                                      item.weather[0].description
-                                    }</p>
-                                </div>
-                  </div>`;
-  let parsedEl = parse.parseFromString(textData, "text/html");
-  foreCastContainer.appendChild(parsedEl.documentElement);
-};
-
-
 
 // event handler
 document.getElementById("search-button").addEventListener("click", getWeather);
 
 $(".city-list-box").on("click", ".city-name", async function () {
+  
   $("#city-name")[0].textContent = $(this)[0].textContent + " (" + moment().format('M/D/YYYY') + ")";
   var cityName = $(this)[0].textContent;
-  console.log(cityName);
-  // var cordenates = localStorage.getItem(cityName)
+  console.log($(this)[0].textContent);
+  var cord = localStorage.getItem(cityName)
+  
 var url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`
 let response = await fetch(url)
 let data = await response.json()
-displayWeather(data);
+
 getForecast(data.name);
   
-  // var previousSearch = $(this)[0].textContent;
-  // document.querySelector("#cityName").value = previousSearch ?? "minneapolis";
-  
-  // update cityName input content
-  // click search-button
 });
-
-
