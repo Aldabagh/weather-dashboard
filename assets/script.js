@@ -1,14 +1,15 @@
 const apiKey = "64a3b92c5913e381167a37aa42725948";
 
-let savedCities = JSON.parse(localStorage.getItem("savedCities"))
-savedCities.forEach(function(item){
-  if (item) {
+let savedCities = JSON.parse(localStorage.getItem("savedCities"));
+
+  if (savedCities) {
+    savedCities.forEach(function(item){
   $("#city-list").append(
     '<button type="button" class="list-group-item list-group-item-light list-group-item-action city-name">' +
       item,
-  );
-  }
-});
+    )});
+  
+};
 
 
 // API requests current weather
